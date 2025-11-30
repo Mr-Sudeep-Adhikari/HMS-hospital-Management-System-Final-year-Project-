@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login Portal | Global Hospitals</title>
+    <title>Login Portal | KMC Hospital</title>
     <link rel="shortcut icon" href="images/favicon.png">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
@@ -84,21 +84,25 @@
             </p>
 
             <div class="grid grid-cols-3 gap-6 mt-10">
-                <div class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
+                <div
+                    class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
                     <i class="fas fa-user-injured text-4xl mb-3 text-emerald-200"></i>
                     <p class="font-bold text-lg">Patients</p>
                 </div>
-                <div class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
+                <div
+                    class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
                     <i class="fas fa-stethoscope text-4xl mb-3 text-emerald-200"></i>
                     <p class="font-bold text-lg">Doctors</p>
                 </div>
-                <div class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
+                <div
+                    class="bg-white/15 backdrop-blur-lg p-6 rounded-2xl border border-white/30 text-center transform hover:scale-110 transition">
                     <i class="fas fa-user-shield text-4xl mb-3 text-emerald-200"></i>
                     <p class="font-bold text-lg">Admin</p>
                 </div>
             </div>
 
-            <a href="index.php" class="inline-flex items-center mt-10 text-emerald-200 hover:text-white text-lg font-semibold transition">
+            <a href="index.php"
+                class="inline-flex items-center mt-10 text-emerald-200 hover:text-white text-lg font-semibold transition">
                 <i class="fas fa-arrow-left mr-3"></i> Back to Home
             </a>
         </div>
@@ -106,10 +110,11 @@
         <!-- Right Side: Login Card -->
         <div class="card p-8 lg:p-10">
             <div class="text-center mb-8">
-                <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full mb-6 shadow-2xl">
+                <div
+                    class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-emerald-400 to-green-600 rounded-full mb-6 shadow-2xl">
                     <i class="fas fa-hospital text-4xl text-white"></i>
                 </div>
-                <h2 class="text-4xl font-bold text-gray-800">Global Hospitals</h2>
+                <h2 class="text-4xl font-bold text-gray-800">KMC Hospital</h2>
                 <p class="text-emerald-600 font-medium mt-2">Secure Login Portal</p>
             </div>
 
@@ -146,7 +151,8 @@
                     Login as Patient
                 </button>
                 <p class="text-center text-gray-600">
-                    Don't have an account? <a href="index.php#register" class="text-emerald-600 font-bold hover:underline">Register here</a>
+                    Don't have an account? <a href="index.php#register"
+                        class="text-emerald-600 font-bold hover:underline">Register here</a>
                 </p>
             </form>
 
@@ -207,4 +213,5 @@
     </script>
 
 </body>
+
 </html>

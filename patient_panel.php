@@ -3,19 +3,19 @@ session_start();
 
 // === SECURITY: Must be logged in ===
 if (!isset($_SESSION['pid']) || !isset($_SESSION['fname'])) {
-    header("Location: patientlogin.php");
+    header("Location: index.php");
     exit();
 }
 
 include('func.php');
 include('newfunc.php'); // For display_docs() & display_specs()
 
-$con = mysqli_connect("localhost", "root", "", "hospitaldatabase");
+$con = mysqli_connect("localhost", "root", "", "myhmsdb");
 if (!$con) {
     die("<div class='bg-red-100 p-6 rounded-xl text-red-700'>Database Connection Failed!</div>");
 }
 
-$pid = (int)$_SESSION['pid'];
+$pid = (int) $_SESSION['pid'];
 $fname = htmlspecialchars($_SESSION['fname']);
 $lname = htmlspecialchars($_SESSION['lname'] ?? '');
 $email = htmlspecialchars($_SESSION['email'] ?? '');
@@ -24,7 +24,7 @@ $gender = htmlspecialchars($_SESSION['gender'] ?? '');
 
 // === CANCEL APPOINTMENT ===
 if (isset($_GET['cancel']) && isset($_GET['ID'])) {
-    $id = (int)$_GET['ID'];
+    $id = (int) $_GET['ID'];
     $stmt = mysqli_prepare($con, "UPDATE appointmenttb SET userStatus = 0 WHERE ID = ? AND pid = ? AND userStatus = 1");
     mysqli_stmt_bind_param($stmt, "ii", $id, $pid);
     if (mysqli_stmt_execute($stmt)) {
@@ -41,8 +41,8 @@ if (isset($_GET['cancel']) && isset($_GET['ID'])) {
 // === GENERATE PDF BILL (TCPDF) ===
 if (isset($_GET['bill']) && isset($_GET['ID'])) {
     require_once("TCPDF/tcpdf.php");
-    
-    $id = (int)$_GET['ID'];
+
+    $id = (int) $_GET['ID'];
     $stmt = mysqli_prepare($con, "
         SELECT p.disease, p.prescription, p.allergy, a.doctor, a.appdate, a.apptime, a.docFees
         FROM prestb p 
@@ -52,7 +52,7 @@ if (isset($_GET['bill']) && isset($_GET['ID'])) {
     mysqli_stmt_bind_param($stmt, "ii", $id, $pid);
     mysqli_stmt_execute($stmt);
     $result = mysqli_stmt_get_result($stmt);
-    
+
     if ($row = mysqli_fetch_assoc($result)) {
         $pdf = new TCPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
         $pdf->SetCreator('KMC Hospital');
@@ -95,7 +95,7 @@ if (isset($_GET['bill']) && isset($_GET['ID'])) {
             </tr>
             <tr style="background:#d1fae5; font-size:16px;">
                 <td><strong>Consultation Fee</strong></td>
-                <td><strong>रुपैयाँ ' . number_format($row['docFees']) . ' Only</strong></td>
+                <td><strong>रु ' . number_format($row['docFees']) . ' Only</strong></td>
             </tr>
         </table>
         <br><br>
@@ -115,10 +115,10 @@ if (isset($_GET['bill']) && isset($_GET['ID'])) {
 
 // === BOOK APPOINTMENT ===
 if (isset($_POST['app-submit'])) {
-    $doctor   = mysqli_real_escape_string($con, $_POST['doctor']);
-    $docFees  = (int)$_POST['docFees'];
-    $appdate  = $_POST['appdate'];
-    $apptime  = $_POST['apptime'];
+    $doctor = mysqli_real_escape_string($con, $_POST['doctor']);
+    $docFees = (int) $_POST['docFees'];
+    $appdate = $_POST['appdate'];
+    $apptime = $_POST['apptime'];
 
     if (strtotime($appdate) < strtotime('today')) {
         $_SESSION['msg'] = "Cannot book past date!";
@@ -135,7 +135,7 @@ if (isset($_POST['app-submit'])) {
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, 1)
             ");
             mysqli_stmt_bind_param($stmt, "isssssisss", $pid, $fname, $lname, $gender, $email, $contact, $doctor, $docFees, $appdate, $apptime);
-            
+
             if (mysqli_stmt_execute($stmt)) {
                 $_SESSION['msg'] = "Appointment booked successfully with Dr. $doctor!";
                 $_SESSION['msg_type'] = "success";
@@ -152,6 +152,7 @@ if (isset($_POST['app-submit'])) {
 
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -165,22 +166,72 @@ if (isset($_POST['app-submit'])) {
             background-size: 200% 200%;
             animation: gradient 12s ease infinite;
         }
-        @keyframes gradient { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
-        .card { background: rgba(255,255,255,0.98); backdrop-filter: blur(20px); border: 1px solid rgba(255,255,255,0.4); }
-        .btn { background: linear-gradient(to right, #059669, #10b981); }
-        .btn:hover { transform: translateY(-6px); box-shadow: 0 25px 50px rgba(5,150,105,0.5); }
-        .tab-btn { transition: all 0.4s; }
-        .tab-active { background: white; color: #059669; font-weight: bold; box-shadow: 0 20px 40px rgba(0,0,0,0.2); border: 3px solid #059669; }
-        .alert { animation: slideDown 0.6s ease-out; }
-        @keyframes slideDown { from { transform: translateY(-100px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        @keyframes gradient {
+
+            0%,
+            100% {
+                background-position: 0% 50%
+            }
+
+            50% {
+                background-position: 100% 50%
+            }
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.4);
+        }
+
+        .btn {
+            background: linear-gradient(to right, #059669, #10b981);
+        }
+
+        .btn:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 25px 50px rgba(5, 150, 105, 0.5);
+        }
+
+        .tab-btn {
+            transition: all 0.4s;
+        }
+
+        .tab-active {
+            background: white;
+            color: #059669;
+            font-weight: bold;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            border: 3px solid #059669;
+        }
+
+        .alert {
+            animation: slideDown 0.6s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
     </style>
 </head>
+
 <body class="gradient-bg min-h-screen text-gray-800">
 
     <!-- Alert Messages -->
     <?php if (isset($_SESSION['msg'])): ?>
-        <div class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 alert <?= $_SESSION['msg_type'] == 'success' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800' ?> px-10 py-6 rounded-2xl shadow-2xl border-2 font-bold text-lg">
-            <i class="fas <?= $_SESSION['msg_type'] == 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?> mr-3"></i>
+        <div
+            class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 alert <?= $_SESSION['msg_type'] == 'success' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800' ?> px-10 py-6 rounded-2xl shadow-2xl border-2 font-bold text-lg">
+            <i
+                class="fas <?= $_SESSION['msg_type'] == 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?> mr-3"></i>
             <?= $_SESSION['msg'] ?>
         </div>
         <?php unset($_SESSION['msg'], $_SESSION['msg_type']); ?>
@@ -195,7 +246,8 @@ if (isset($_POST['app-submit'])) {
             </div>
             <div class="flex items-center gap-8">
                 <span class="hidden md:block text-xl">Welcome, <strong><?= $fname ?></strong></span>
-                <a href="logout.php" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-full font-bold text-lg transition">
+                <a href="logout.php"
+                    class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-full font-bold text-lg transition">
                     <i class="fas fa-sign-out-alt mr-2"></i>Logout
                 </a>
             </div>
@@ -212,16 +264,20 @@ if (isset($_POST['app-submit'])) {
 
             <!-- Sidebar -->
             <div class="space-y-6">
-                <button onclick="showTab('home')" class="tab-btn tab-active w-full text-left px-8 py-6 rounded-3xl text-xl font-bold flex items-center gap-4">
+                <button onclick="showTab('home')"
+                    class="tab-btn tab-active w-full text-left px-8 py-6 rounded-3xl text-xl font-bold flex items-center gap-4">
                     <i class="fas fa-home text-2xl"></i> Dashboard
                 </button>
-                <button onclick="showTab('book')" class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
+                <button onclick="showTab('book')"
+                    class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
                     <i class="fas fa-calendar-plus text-2xl"></i> Book Appointment
                 </button>
-                <button onclick="showTab('appointments')" class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
+                <button onclick="showTab('appointments')"
+                    class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
                     <i class="fas fa-calendar-check text-2xl"></i> My Appointments
                 </button>
-                <button onclick="showTab('bills')" class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
+                <button onclick="showTab('bills')"
+                    class="tab-btn w-full text-left px-8 py-6 rounded-3xl bg-white/90 hover:bg-white shadow-2xl text-xl font-bold flex items-center gap-4">
                     <i class="fas fa-file-invoice-dollar text-2xl"></i> Bills & Prescriptions
                 </button>
             </div>
@@ -231,15 +287,18 @@ if (isset($_POST['app-submit'])) {
 
                 <!-- Home Dashboard -->
                 <div id="home" class="grid md:grid-cols-3 gap-8">
-                    <div onclick="showTab('book')" class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div onclick="showTab('book')"
+                        class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
                         <i class="fas fa-calendar-plus text-8xl text-emerald-600 mb-6"></i>
                         <h3 class="text-3xl font-bold">Book Appointment</h3>
                     </div>
-                    <div onclick="showTab('appointments')" class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div onclick="showTab('appointments')"
+                        class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
                         <i class="fas fa-calendar-check text-8xl text-emerald-600 mb-6"></i>
                         <h3 class="text-3xl font-bold">My Appointments</h3>
                     </div>
-                    <div onclick="showTab('bills')" class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+                    <div onclick="showTab('bills')"
+                        class="card p-12 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
                         <i class="fas fa-file-medical text-8xl text-emerald-600 mb-6"></i>
                         <h3 class="text-3xl font-bold">Download Bills</h3>
                     </div>
@@ -252,14 +311,16 @@ if (isset($_POST['app-submit'])) {
                         <div class="grid md:grid-cols-2 gap-10">
                             <div>
                                 <label class="block text-xl font-bold mb-4">Specialization</label>
-                                <select id="spec" onchange="filterDoctors()" class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
+                                <select id="spec" onchange="filterDoctors()"
+                                    class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
                                     <option value="">All Specializations</option>
                                     <?php display_specs(); ?>
                                 </select>
                             </div>
                             <div>
                                 <label class="block text-xl font-bold mb-4">Select Doctor</label>
-                                <select name="doctor" id="doctor" onchange="updateFee()" required class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
+                                <select name="doctor" id="doctor" onchange="updateFee()" required
+                                    class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
                                     <option value="">Choose Doctor</option>
                                     <?php display_docs(); ?>
                                 </select>
@@ -269,16 +330,19 @@ if (isset($_POST['app-submit'])) {
                         <div class="grid md:grid-cols-3 gap-10">
                             <div>
                                 <label class="block text-xl font-bold mb-4">Fee</label>
-                                <input type="text" id="feeDisplay" readonly class="w-full px-8 py-5 bg-emerald-50 rounded-2xl font-bold text-emerald-700 text-xl text-center">
+                                <input type="text" id="feeDisplay" readonly
+                                    class="w-full px-8 py-5 rounded-2xl font-bold border-2 border-emerald-300 outline-none focus:border-emerald-600 text-xl text-center">
                                 <input type="hidden" name="docFees" id="docFees" required>
                             </div>
                             <div>
                                 <label class="block text-xl font-bold mb-4">Date</label>
-                                <input type="date" name="appdate" min="<?= date('Y-m-d') ?>" required class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
+                                <input type="date" name="appdate" min="<?= date('Y-m-d') ?>" required
+                                    class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
                             </div>
                             <div>
                                 <label class="block text-xl font-bold mb-4">Time</label>
-                                <select name="apptime" required class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
+                                <select name="apptime" required
+                                    class="w-full px-8 py-5 rounded-2xl border-2 border-emerald-300 focus:border-emerald-600 outline-none text-lg">
                                     <option value="">Select Time</option>
                                     <option value="09:00:00">9:00 AM</option>
                                     <option value="11:00:00">11:00 AM</option>
@@ -289,7 +353,8 @@ if (isset($_POST['app-submit'])) {
                         </div>
 
                         <div class="text-center pt-8">
-                            <button type="submit" name="app-submit" class="btn text-white font-extrabold text-2xl px-24 py-7 rounded-3xl shadow-2xl transition transform hover:scale-110">
+                            <button type="submit" name="app-submit"
+                                class="btn text-white font-extrabold text-2xl px-24 py-7 rounded-3xl shadow-2xl transition transform hover:scale-110">
                                 Book Now
                             </button>
                         </div>
@@ -320,12 +385,12 @@ if (isset($_POST['app-submit'])) {
                                         <td class='px-8 py-6'>Dr. {$r['doctor']}</td>
                                         <td class='px-8 py-6'>" . date('d M Y', strtotime($r['appdate'])) . "</td>
                                         <td class='px-8 py-6'>" . date('g:i A', strtotime($r['apptime'])) . "</td>
-                                        <td class='px-8 py-6 font-bold'>रुपैयाँ{$r['docFees']}</td>
+                                        <td class='px-8 py-6 font-bold'>रु{$r['docFees']}</td>
                                         <td class='px-8 py-6'>$status</td>
                                         <td class='px-8 py-6'>
-                                            " . ($r['userStatus'] == 1 && $r['doctorStatus'] == 1 ? 
-                                            "<a href='?cancel=1&ID={$r['ID']}' onclick='return confirm(\"Cancel this appointment?\")' class='bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold'>Cancel</a>" : 
-                                            "<span class='text-gray-500'>Cancelled</span>") . "
+                                            " . ($r['userStatus'] == 1 && $r['doctorStatus'] == 1 ?
+                                        "<a href='?cancel=1&ID={$r['ID']}' onclick='return confirm(\"Cancel this appointment?\")' class='bg-red-600 hover:bg-red-700 text-white px-6 py-3 rounded-xl font-bold'>Cancel</a>" :
+                                        "<span class='text-gray-500'>Cancelled</span>") . "
                                         </td>
                                     </tr>";
                                 }
@@ -377,7 +442,7 @@ if (isset($_POST['app-submit'])) {
         function showTab(tab) {
             document.querySelectorAll('#home, #book, #appointments, #bills').forEach(el => el.classList.add('hidden'));
             document.getElementById(tab).classList.remove('hidden');
-            
+
             document.querySelectorAll('.tab-btn').forEach(btn => {
                 btn.classList.remove('tab-active');
                 btn.classList.add('bg-white/90');
@@ -402,7 +467,7 @@ if (isset($_POST['app-submit'])) {
         function updateFee() {
             const selected = document.querySelector('#doctor option:checked');
             if (selected && selected.value) {
-                document.getElementById('feeDisplay').value = 'रुपैयाँ' + selected.dataset.fee;
+                document.getElementById('feeDisplay').value = 'रु' + selected.dataset.fee;
                 document.getElementById('docFees').value = selected.dataset.fee;
             } else {
                 document.getElementById('feeDisplay').value = '';
@@ -417,4 +482,5 @@ if (isset($_POST['app-submit'])) {
         }, 5000);
     </script>
 </body>
+
 </html>

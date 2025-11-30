@@ -1,44 +1,109 @@
 <?php
-session_start();
-$con=mysqli_connect("localhost","root","","myhmsdb");
-if(isset($_POST['patsub'])){
-	$email=$_POST['email'];
-	$password=$_POST['password2'];
-	$query="select * from patreg where email='$email' and password='$password';";
-	$result=mysqli_query($con,$query);
-	if(mysqli_num_rows($result)==1)
-	{
-		while($row=mysqli_fetch_array($result,MYSQLI_ASSOC)){
-      $_SESSION['pid'] = $row['pid'];
-      $_SESSION['username'] = $row['fname']." ".$row['lname'];
-      $_SESSION['fname'] = $row['fname'];
-      $_SESSION['lname'] = $row['lname'];
-      $_SESSION['gender'] = $row['gender'];
-      $_SESSION['contact'] = $row['contact'];
-      $_SESSION['email'] = $row['email'];
-    }
-		header("Location:admin-panel.php");
-	}
-  else {
-    echo("<script>alert('Invalid Username or Password. Try Again!');
-          window.location.href = 'index1.php';</script>");
-    // header("Location:error.php");
+// =============================================================================
+// PATIENT LOGIN HANDLER - SECURE VERSION
+// =============================================================================
+require_once 'config.php';
+
+startSecureSession();
+$con = getDBConnection();
+
+// =============================================================================
+// PATIENT LOGIN (from patient-login.php)
+// =============================================================================
+if (isset($_POST['patsub'])) {
+  $email = trim(sanitizeInput($_POST['email']));
+  $password = trim($_POST['password2']);
+
+  // Validate email format
+  if (!validateEmail($email)) {
+    alertAndRedirect('Invalid email format!', 'index.php');
   }
-		
+
+  // SECURE: Use prepared statement to prevent SQL injection
+  $query = "SELECT * FROM patreg WHERE email = ?";
+  $stmt = executeQuery($con, $query, "s", [$email]);
+
+  if ($stmt) {
+    $result = mysqli_stmt_get_result($stmt);
+
+    if (mysqli_num_rows($result) == 1) {
+      $row = mysqli_fetch_assoc($result);
+
+      // SECURE: Verify password (supports both hashed and plain text for migration)
+      $passwordValid = false;
+      $passwordInfo = password_get_info($row['password']);
+
+      // FIXED: Check if algo is 0 (plain text) or null (plain text)
+      if ($passwordInfo['algo'] !== 0 && $passwordInfo['algo'] !== null) {
+        // Password is hashed
+        $passwordValid = verifyPassword($password, $row['password']);
+      } else {
+        // Legacy plain text password (for backward compatibility during migration)
+        $passwordValid = ($password === $row['password']);
+
+        // Auto-upgrade to hashed password
+        if ($passwordValid) {
+          $hashedPassword = hashPassword($password);
+          $updateQuery = "UPDATE patreg SET password = ?, cpassword = ? WHERE pid = ?";
+          executeQuery($con, $updateQuery, "ssi", [$hashedPassword, $hashedPassword, $row['pid']]);
+        }
+      }
+
+      if ($passwordValid) {
+        // Set session variables
+        $_SESSION['pid'] = $row['pid'];
+        $_SESSION['username'] = $row['fname'] . " " . $row['lname'];
+        $_SESSION['fname'] = $row['fname'];
+        $_SESSION['lname'] = $row['lname'];
+        $_SESSION['gender'] = $row['gender'];
+        $_SESSION['contact'] = $row['contact'];
+        $_SESSION['email'] = $row['email'];
+        $_SESSION['user_type'] = 'patient';
+        $_SESSION['last_activity'] = time();
+
+        // FIXED: Redirect to correct patient panel
+        redirectTo('patient_panel.php');
+      } else {
+        alertAndRedirect('Invalid email or password. Try again!', 'index.php');
+      }
+    } else {
+      alertAndRedirect('Invalid email or password. Try again!', 'index.php');
+    }
+
+    mysqli_stmt_close($stmt);
+  } else {
+    alertAndRedirect('System error. Please try again later.', 'index.php');
+  }
 }
-if(isset($_POST['update_data']))
-{
-	$contact=$_POST['contact'];
-	$status=$_POST['status'];
-	$query="update appointmenttb set payment='$status' where contact='$contact';";
-	$result=mysqli_query($con,$query);
-	if($result)
-		header("Location:updated.php");
+
+// =============================================================================
+// UPDATE PAYMENT STATUS (Receptionist)
+// =============================================================================
+if (isset($_POST['update_data'])) {
+  $contact = sanitizeInput($_POST['contact']);
+  $status = sanitizeInput($_POST['status']);
+
+  // Validate inputs
+  if (empty($contact) || empty($status)) {
+    alertAndRedirect('Contact and status are required!', 'admin-panel1.php');
+  }
+
+  // SECURE: Use prepared statement
+  $query = "UPDATE appointmenttb SET payment = ? WHERE contact = ?";
+  $stmt = executeQuery($con, $query, "ss", [$status, $contact]);
+
+  if ($stmt) {
+    mysqli_stmt_close($stmt);
+    alertAndRedirect('Payment status updated successfully!', 'admin-panel1.php');
+  } else {
+    alertAndRedirect('Failed to update payment status!', 'admin-panel1.php');
+  }
 }
 
-
-
-
+// =============================================================================
+// DISPLAY DOCTORS FUNCTION (UNUSED - Moved to newfunc.php)
+// =============================================================================
+// COMMENTED OUT: This function is duplicated in newfunc.php which has better implementation
 // function display_docs()
 // {
 // 	global $con;
@@ -52,19 +117,49 @@ if(isset($_POST['update_data']))
 // 	}
 // }
 
-if(isset($_POST['doc_sub']))
-{
-	$doctor=$_POST['doctor'];
-  $dpassword=$_POST['dpassword'];
-  $demail=$_POST['demail'];
-  $docFees=$_POST['docFees'];
-	$query="insert into doctb(username,password,email,docFees)values('$doctor','$dpassword','$demail','$docFees')";
-	$result=mysqli_query($con,$query);
-	if($result)
-		header("Location:adddoc.php");
+// =============================================================================
+// ADD DOCTOR (Admin)
+// =============================================================================
+if (isset($_POST['doc_sub'])) {
+  $doctor = sanitizeInput($_POST['doctor']);
+  $dpassword = $_POST['dpassword'];
+  $demail = sanitizeInput($_POST['demail']);
+  $docFees = intval($_POST['docFees']);
+  $spec = isset($_POST['spec']) ? sanitizeInput($_POST['spec']) : 'General';
+
+  // Validate inputs
+  if (empty($doctor) || empty($dpassword) || empty($demail)) {
+    alertAndRedirect('All fields are required!', 'admin-panel1.php');
+  }
+
+  if (!validateEmail($demail)) {
+    alertAndRedirect('Invalid email format!', 'admin-panel1.php');
+  }
+
+  // SECURE: Hash password
+  $hashedPassword = hashPassword($dpassword);
+
+  // SECURE: Use prepared statement
+  $query = "INSERT INTO doctb(username, password, email, docFees, spec) VALUES(?, ?, ?, ?, ?)";
+  $stmt = executeQuery($con, $query, "sssis", [$doctor, $hashedPassword, $demail, $docFees, $spec]);
+
+  if ($stmt) {
+    mysqli_stmt_close($stmt);
+    alertAndRedirect('Doctor added successfully!', 'admin-panel1.php');
+  } else {
+    alertAndRedirect('Failed to add doctor!', 'admin-panel1.php');
+  }
 }
-function display_admin_panel(){
-	echo '<!DOCTYPE html>
+
+// =============================================================================
+// DISPLAY ADMIN PANEL FUNCTION (UNUSED - COMMENTED OUT)
+// =============================================================================
+// COMMENTED OUT: This entire function is not used anywhere and contains 200+ lines of HTML
+// This is duplicate code that should be in separate view files
+/*
+function display_admin_panel()
+{
+  echo '<!DOCTYPE html>
 <html lang="en">
   <head>
     <!-- Required meta tags -->
@@ -75,7 +170,7 @@ function display_admin_panel(){
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
       <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-  <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> Global Hospital</a>
+  <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> KMC Hospital</a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
@@ -114,8 +209,6 @@ function display_admin_panel(){
        <a class="list-group-item list-group-item-action" id="list-attend-list" data-toggle="list" href="#list-attend" role="tab" aria-controls="settings">Attendance</a>
     </div><br>
   </div>
-
-  
 
 
 
@@ -220,4 +313,5 @@ function display_admin_panel(){
   </body>
 </html>';
 }
+*/
 ?>

@@ -1,0 +1,42 @@
+[30-Nov-2025 17:56:57 Europe/Berlin] PHP Warning:  mysqli_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\config.php on line 32
+[30-Nov-2025 17:56:57 Europe/Berlin] Database Connection Failed: No connection could be made because the target machine actively refused it
+[30-Nov-2025 17:57:02 Europe/Berlin] PHP Warning:  mysqli_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\config.php on line 32
+[30-Nov-2025 17:57:02 Europe/Berlin] Database Connection Failed: No connection could be made because the target machine actively refused it
+[30-Nov-2025 17:57:06 Europe/Berlin] PHP Warning:  mysqli_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\config.php on line 32
+[30-Nov-2025 17:57:06 Europe/Berlin] Database Connection Failed: No connection could be made because the target machine actively refused it
+[30-Nov-2025 17:57:10 Europe/Berlin] PHP Warning:  mysqli_connect(): (HY000/2002): No connection could be made because the target machine actively refused it in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\config.php on line 32
+[30-Nov-2025 17:57:10 Europe/Berlin] Database Connection Failed: No connection could be made because the target machine actively refused it
+[30-Nov-2025 18:37:17 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: mysqli_fetch_assoc(): Argument #1 ($result) must be of type mysqli_result, bool given in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php:317
+Stack trace:
+#0 C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php(317): mysqli_fetch_assoc(false)
+#1 {main}
+  thrown in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php on line 317
+[30-Nov-2025 19:03:15 Europe/Berlin] PHP Fatal error:  Uncaught TypeError: mysqli_fetch_assoc(): Argument #1 ($result) must be of type mysqli_result, bool given in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php:317
+Stack trace:
+#0 C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php(317): mysqli_fetch_assoc(false)
+#1 {main}
+  thrown in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\patient_panel.php on line 317
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $isunicode in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 1998
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $isunicode in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 2024
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $setbom in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 2040
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $setbom in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 2060
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $str in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 2077
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $currentfont follows optional parameter $str in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_fonts.php on line 2093
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $tagvspaces follows optional parameter $default_css in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_static.php on line 1139
+[30-Nov-2025 19:15:13 Europe/Berlin] PHP Deprecated:  Required parameter $k follows optional parameter $points in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\TCPDF\include\tcpdf_static.php on line 2510
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "pid" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 8
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "username" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 9
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 10
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "fname" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 11
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "gender" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 12
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "lname" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 13
+[30-Nov-2025 19:21:19 Europe/Berlin] PHP Warning:  Undefined array key "contact" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 14
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "pid" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 8
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "username" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 9
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "email" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 10
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "fname" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 11
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "gender" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 12
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "lname" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 13
+[30-Nov-2025 19:21:34 Europe/Berlin] PHP Warning:  Undefined array key "contact" in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\admin-panel.php on line 14
+[30-Nov-2025 20:31:06 Europe/Berlin] PHP Warning:  Undefined variable $row in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\func3.php on line 53
+[30-Nov-2025 20:31:06 Europe/Berlin] PHP Warning:  Trying to access array offset on value of type null in C:\Users\Asus\OneDrive\Desktop\HMS-hospital-Management-System-Final-year-Project-\func3.php on line 53

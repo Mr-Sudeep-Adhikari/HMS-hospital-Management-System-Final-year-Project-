@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,7 @@
 
     <!-- Tailwind CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
-    
+
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 
@@ -16,6 +17,7 @@
         .gradient-bg {
             background: linear-gradient(135deg, #065f46 0%, #059669 50%, #10b981 100%);
         }
+
         .card {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(12px);
@@ -23,6 +25,7 @@
         }
     </style>
 </head>
+
 <body class="gradient-bg min-h-screen text-gray-800">
 
     <!-- Navbar -->
@@ -33,9 +36,10 @@
                 <h1 class="text-2xl font-bold hidden sm:block">KMC Hospital</h1>
             </div>
             <div class="hidden md:flex gap-8 text-lg">
-                <a href="index.html" class="hover:text-emerald-200 font-semibold">Home</a>
+                <a href="index.php" class="hover:text-emerald-200 font-semibold">Home</a>
                 <a href="services.html" class="hover:text-emerald-200">Services</a>
-                <a href="about.html" class="hover:text-emerald-200 font-semibold border-b-2 border-emerald-200">About</a>
+                <a href="about.html"
+                    class="hover:text-emerald-200 font-semibold border-b-2 border-emerald-200">About</a>
                 <a href="contact.html" class="hover:text-emerald-200">Contact</a>
             </div>
             <button id="mobileMenuBtn" class="md:hidden text-3xl">
@@ -46,7 +50,7 @@
         <!-- Mobile Menu -->
         <div id="mobileMenu" class="hidden md:hidden bg-emerald-800 py-6">
             <div class="flex flex-col gap-6 text-center text-lg">
-                <a href="index.html" class="hover:text-emerald-200">Home</a>
+                <a href="index.php" class="hover:text-emerald-200">Home</a>
                 <a href="services.html" class="hover:text-emerald-200">Services</a>
                 <a href="about.html" class="hover:text-emerald-200 font-semibold">About</a>
                 <a href="contact.html" class="hover:text-emerald-200">Contact</a>
@@ -76,8 +80,8 @@
                     <h2 class="text-4xl font-bold text-emerald-700 mb-4">Our Mission</h2>
                 </div>
                 <p class="text-xl leading-relaxed text-gray-700">
-                    To provide world-class healthcare services with compassion, 
-                    utilizing cutting-edge technology and a patient-centered approach 
+                    To provide world-class healthcare services with compassion,
+                    utilizing cutting-edge technology and a patient-centered approach
                     to improve lives and promote wellness in our community.
                 </p>
             </div>
@@ -87,8 +91,8 @@
                     <h2 class="text-4xl font-bold text-emerald-700 mb-4">Our Vision</h2>
                 </div>
                 <p class="text-xl leading-relaxed text-gray-700">
-                    To be the leading healthcare provider in the region, 
-                    recognized for our commitment to excellence, 
+                    To be the leading healthcare provider in the region,
+                    recognized for our commitment to excellence,
                     innovation, and compassionate patient care.
                 </p>
             </div>
@@ -103,9 +107,9 @@
             <div class="grid md:grid-cols-2 gap-12 items-center">
                 <div>
                     <p class="text-xl text-gray-700 leading-relaxed mb-8">
-                        Founded in 1985, KMC Hospital has grown from a small clinic 
-                        into a state-of-the-art medical facility serving thousands 
-                        of patients annually. Our journey reflects our unwavering 
+                        Founded in 1985, KMC Hospital has grown from a small clinic
+                        into a state-of-the-art medical facility serving thousands
+                        of patients annually. Our journey reflects our unwavering
                         commitment to quality healthcare and community service.
                     </p>
                     <div class="grid grid-cols-2 gap-8 mt-12">
@@ -120,9 +124,8 @@
                     </div>
                 </div>
                 <div class="relative">
-                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop&crop=center" 
-                         alt="KMC Hospital Facility" 
-                         class="w-full h-96 object-cover rounded-3xl shadow-2xl">
+                    <img src="https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=600&h=400&fit=crop&crop=center"
+                        alt="KMC Hospital Facility" class="w-full h-96 object-cover rounded-3xl shadow-2xl">
                     <div class="absolute inset-0 bg-gradient-to-t from-emerald-600/30 to-transparent rounded-3xl"></div>
                 </div>
             </div>
@@ -134,17 +137,21 @@
                 <h2 class="text-5xl font-bold text-emerald-700 mb-6">Our Core Values</h2>
             </div>
             <div class="grid md:grid-cols-3 gap-8">
-                <div class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
+                <div
+                    class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
                     <i class="fas fa-heart text-5xl text-emerald-600 mb-6 group-hover:scale-110 transition"></i>
                     <h3 class="text-2xl font-bold text-emerald-700 mb-4">Compassion</h3>
                     <p class="text-lg text-gray-700">We treat every patient with empathy, dignity, and respect.</p>
                 </div>
-                <div class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
+                <div
+                    class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
                     <i class="fas fa-award text-5xl text-emerald-600 mb-6 group-hover:scale-110 transition"></i>
                     <h3 class="text-2xl font-bold text-emerald-700 mb-4">Excellence</h3>
-                    <p class="text-lg text-gray-700">We deliver the highest quality care through continuous improvement.</p>
+                    <p class="text-lg text-gray-700">We deliver the highest quality care through continuous improvement.
+                    </p>
                 </div>
-                <div class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
+                <div
+                    class="text-center p-10 bg-emerald-50 rounded-3xl hover:shadow-xl transition-all duration-300 group">
                     <i class="fas fa-stethoscope text-5xl text-emerald-600 mb-6 group-hover:scale-110 transition"></i>
                     <h3 class="text-2xl font-bold text-emerald-700 mb-4">Innovation</h3>
                     <p class="text-lg text-gray-700">We embrace cutting-edge technology for better patient outcomes.</p>
@@ -159,10 +166,12 @@
                 <h2 class="text-4xl font-bold text-emerald-700 mb-6">Ready to Experience World-Class Care?</h2>
                 <p class="text-xl text-gray-700 mb-10">Join thousands of satisfied patients who trust KMC Hospital.</p>
                 <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
-                    <a href="index.html" class="bg-emerald-600 text-white font-bold py-5 px-12 rounded-2xl text-xl hover:bg-emerald-700 transition shadow-lg">
+                    <a href="index.html"
+                        class="bg-emerald-600 text-white font-bold py-5 px-12 rounded-2xl text-xl hover:bg-emerald-700 transition shadow-lg">
                         <i class="fas fa-user-plus mr-3"></i> Register Now
                     </a>
-                    <a href="contact.html" class="border-2 border-emerald-600 text-emerald-600 font-bold py-5 px-12 rounded-2xl text-xl hover:bg-emerald-600 hover:text-white transition shadow-lg">
+                    <a href="contact.html"
+                        class="border-2 border-emerald-600 text-emerald-600 font-bold py-5 px-12 rounded-2xl text-xl hover:bg-emerald-600 hover:text-white transition shadow-lg">
                         <i class="fas fa-phone mr-3"></i> Contact Us
                     </a>
                 </div>
@@ -177,7 +186,8 @@
                 <i class="fas fa-hospital text-4xl"></i>
                 <h3 class="text-2xl font-bold">KMC Hospital</h3>
             </div>
-            <p class="text-lg mb-8 opacity-90">© 2025 KMC Hospital. Excellence in Healthcare • Compassion in Service.</p>
+            <p class="text-lg mb-8 opacity-90">© 2025 KMC Hospital. Excellence in Healthcare • Compassion in Service.
+            </p>
             <div class="flex flex-wrap justify-center gap-6 text-xl">
                 <a href="index.html" class="hover:text-emerald-300 transition">Home</a>
                 <a href="services.html" class="hover:text-emerald-300 transition">Services</a>
@@ -204,4 +214,5 @@
         });
     </script>
 </body>
+
 </html>

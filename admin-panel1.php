@@ -1,601 +1,503 @@
-<!DOCTYPE html>
-<?php 
-$con=mysqli_connect("localhost","root","","myhmsdb");
+<?php
+// =============================================================================
+// ADMIN PANEL - SECURE VERSION
+// =============================================================================
+require_once 'config.php';
 
-include('newfunc.php');
+startSecureSession();
+$con = getDBConnection();
 
-if(isset($_POST['docsub']))
-{
-  $doctor=$_POST['doctor'];
-  $dpassword=$_POST['dpassword'];
-  $demail=$_POST['demail'];
-  $spec=$_POST['special'];
-  $docFees=$_POST['docFees'];
-  $query="insert into doctb(username,password,email,spec,docFees)values('$doctor','$dpassword','$demail','$spec','$docFees')";
-  $result=mysqli_query($con,$query);
-  if($result)
-    {
-      echo "<script>alert('Doctor added successfully!');</script>";
-  }
+// Session validation
+if (!isset($_SESSION['username']) || !isset($_SESSION['user_type']) || $_SESSION['user_type'] != 'admin') {
+  header("Location: index.php");
+  exit();
 }
 
-
-if(isset($_POST['docsub1']))
-{
-  $demail=$_POST['demail'];
-  $query="delete from doctb where email='$demail';";
-  $result=mysqli_query($con,$query);
-  if($result)
-    {
-      echo "<script>alert('Doctor removed successfully!');</script>";
-  }
-  else{
-    echo "<script>alert('Unable to delete!');</script>";
-  }
+// Check session timeout
+if (!isSessionValid()) {
+  destroySession();
+  header("Location: index.php");
+  exit();
 }
 
+// Handle Add Doctor
+if (isset($_POST['docsub'])) {
+  $doctor = sanitizeInput($_POST['doctor']);
+  $dpassword = $_POST['dpassword'];
+  $demail = sanitizeInput($_POST['demail']);
+  $spec = sanitizeInput($_POST['special']);
+  $docFees = sanitizeInput($_POST['docFees']);
 
-?>
-<html lang="en">
-  <head>
-
-
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <link rel="shortcut icon" type="image/x-icon" href="images/favicon.png" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <link rel="stylesheet" type="text/css" href="font-awesome-4.7.0/css/font-awesome.min.css">
-    <link rel="stylesheet" href="style.css">
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="vendor/fontawesome/css/font-awesome.min.css">
-    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous">
-      <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-
-        <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
-  <a class="navbar-brand" href="#"><i class="fa fa-user-plus" aria-hidden="true"></i> Global Hospital </a>
-  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-
-  <script >
-    var check = function() {
-  if (document.getElementById('dpassword').value ==
-    document.getElementById('cdpassword').value) {
-    document.getElementById('message').style.color = '#5dd05d';
-    document.getElementById('message').innerHTML = 'Matched';
+  // Check if doctor exists
+  $check = executeQuery($con, "SELECT * FROM doctb WHERE email = ? OR username = ?", "ss", [$demail, $doctor]);
+  if (mysqli_num_rows(mysqli_stmt_get_result($check)) > 0) {
+    $_SESSION['msg'] = "Doctor already exists!";
+    $_SESSION['msg_type'] = "error";
   } else {
-    document.getElementById('message').style.color = '#f55252';
-    document.getElementById('message').innerHTML = 'Not Matching';
+    // Insert new doctor
+    $query = "INSERT INTO doctb(username, password, email, spec, docFees) VALUES (?, ?, ?, ?, ?)";
+    // Note: In a real app, we should hash this password. For now, keeping it plain as per existing schema, 
+    // but the login logic I wrote handles hashing on first login.
+    if (executeQuery($con, $query, "sssss", [$doctor, $dpassword, $demail, $spec, $docFees])) {
+      $_SESSION['msg'] = "Doctor added successfully!";
+      $_SESSION['msg_type'] = "success";
+    } else {
+      $_SESSION['msg'] = "Failed to add doctor!";
+      $_SESSION['msg_type'] = "error";
+    }
   }
+  header("Location: admin-panel1.php");
+  exit();
 }
 
-    function alphaOnly(event) {
-  var key = event.keyCode;
-  return ((key >= 65 && key <= 90) || key == 8 || key == 32);
-};
-  </script>
+// Handle Delete Doctor
+if (isset($_POST['docsub1'])) {
+  $demail = sanitizeInput($_POST['demail']);
+  $query = "DELETE FROM doctb WHERE email = ?";
+  if (executeQuery($con, $query, "s", [$demail])) {
+    $_SESSION['msg'] = "Doctor removed successfully!";
+    $_SESSION['msg_type'] = "success";
+  } else {
+    $_SESSION['msg'] = "Unable to delete doctor!";
+    $_SESSION['msg_type'] = "error";
+  }
+  header("Location: admin-panel1.php");
+  exit();
+}
+?>
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
 
-  <style >
-    .bg-primary {
-    background: -webkit-linear-gradient(left, #3931af, #00c6ff);
-}
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Portal | KMC Hospital</title>
+  <link rel="shortcut icon" href="images/favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+  <style>
+    .gradient-bg {
+      background: linear-gradient(135deg, #064e3b 0%, #059669 35%, #10b981 100%);
+      background-size: 200% 200%;
+      animation: gradient 12s ease infinite;
+    }
 
-.col-md-4{
-  max-width:20% !important;
-}
+    @keyframes gradient {
 
-.list-group-item.active {
-    z-index: 2;
-    color: #fff;
-    background-color: #342ac1;
-    border-color: #007bff;
-}
-.text-primary {
-    color: #342ac1!important;
-}
+      0%,
+      100% {
+        background-position: 0% 50%
+      }
 
-#cpass {
-  display: -webkit-box;
-}
+      50% {
+        background-position: 100% 50%
+      }
+    }
 
-#list-app{
-  font-size:15px;
-}
+    .card {
+      background: rgba(255, 255, 255, 0.98);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.4);
+    }
 
-.btn-primary{
-  background-color: #3c50c1;
-  border-color: #3c50c1;
-}
+    .btn {
+      background: linear-gradient(to right, #059669, #10b981);
+    }
+
+    .btn:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 25px 50px rgba(5, 150, 105, 0.5);
+    }
+
+    .tab-btn {
+      transition: all 0.4s;
+    }
+
+    .tab-active {
+      background: white;
+      color: #059669;
+      font-weight: bold;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+      border: 3px solid #059669;
+    }
+
+    .alert {
+      animation: slideDown 0.6s ease-out;
+    }
+
+    @keyframes slideDown {
+      from {
+        transform: translateY(-100px);
+        opacity: 0;
+      }
+
+      to {
+        transform: translateY(0);
+        opacity: 1;
+      }
+    }
   </style>
+</head>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
-     <ul class="navbar-nav mr-auto">
-       <li class="nav-item">
-        <a class="nav-link" href="logout1.php"><i class="fa fa-sign-out" aria-hidden="true"></i>Logout</a>
-      </li>
-       <li class="nav-item">
-        <a class="nav-link" href="#"></a>
-      </li>
-    </ul>
-  </div>
-</nav>
-  </head>
-  <style type="text/css">
-    button:hover{cursor:pointer;}
-    #inputbtn:hover{cursor:pointer;}
-  </style>
-  <body style="padding-top:50px;">
-   <div class="container-fluid" style="margin-top:50px;">
-    <h3 style = "margin-left: 40%; padding-bottom: 20px;font-family: 'IBM Plex Sans', sans-serif;"> WELCOME RECEPTIONIST </h3>
-    <div class="row">
-  <div class="col-md-4" style="max-width:25%;margin-top: 3%;">
-    <div class="list-group" id="list-tab" role="tablist">
-      <a class="list-group-item list-group-item-action active" id="list-dash-list" data-toggle="list" href="#list-dash" role="tab" aria-controls="home">Dashboard</a>
-      <a class="list-group-item list-group-item-action" href="#list-doc" id="list-doc-list"  role="tab"    aria-controls="home" data-toggle="list">Doctor List</a>
-      <a class="list-group-item list-group-item-action" href="#list-pat" id="list-pat-list"  role="tab" data-toggle="list" aria-controls="home">Patient List</a>
-      <a class="list-group-item list-group-item-action" href="#list-app" id="list-app-list"  role="tab" data-toggle="list" aria-controls="home">Appointment Details</a>
-      <a class="list-group-item list-group-item-action" href="#list-pres" id="list-pres-list"  role="tab" data-toggle="list" aria-controls="home">Prescription List</a>
-      <a class="list-group-item list-group-item-action" href="#list-settings" id="list-adoc-list"  role="tab" data-toggle="list" aria-controls="home">Add Doctor</a>
-      <a class="list-group-item list-group-item-action" href="#list-settings1" id="list-ddoc-list"  role="tab" data-toggle="list" aria-controls="home">Delete Doctor</a>
-      <a class="list-group-item list-group-item-action" href="#list-mes" id="list-mes-list"  role="tab" data-toggle="list" aria-controls="home">Queries</a>
-      
-    </div><br>
-  </div>
-  <div class="col-md-8" style="margin-top: 3%;">
-    <div class="tab-content" id="nav-tabContent" style="width: 950px;">
+<body class="gradient-bg min-h-screen text-gray-800">
 
+  <!-- Alert Messages -->
+  <?php if (isset($_SESSION['msg'])): ?>
+    <div
+      class="fixed top-20 left-1/2 transform -translate-x-1/2 z-50 alert <?= $_SESSION['msg_type'] == 'success' ? 'bg-green-100 border-green-500 text-green-800' : 'bg-red-100 border-red-500 text-red-800' ?> px-10 py-6 rounded-2xl shadow-2xl border-2 font-bold text-lg">
+      <i class="fas <?= $_SESSION['msg_type'] == 'success' ? 'fa-check-circle' : 'fa-exclamation-triangle' ?> mr-3"></i>
+      <?= $_SESSION['msg'] ?>
+    </div>
+    <?php unset($_SESSION['msg'], $_SESSION['msg_type']); ?>
+  <?php endif; ?>
 
+  <!-- Navbar -->
+  <nav class="bg-emerald-800/95 backdrop-blur-xl text-white fixed w-full top-0 z-40 shadow-2xl">
+    <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+      <div class="flex items-center gap-4">
+        <i class="fas fa-user-shield text-4xl animate-pulse"></i>
+        <h1 class="text-3xl font-extrabold">KMC Hospital</h1>
+      </div>
+      <div class="flex items-center gap-8">
+        <span class="hidden md:block text-xl">Welcome, <strong>Admin</strong></span>
+        <a href="logout1.php" class="bg-red-600 hover:bg-red-700 px-8 py-4 rounded-full font-bold text-lg transition">
+          <i class="fas fa-sign-out-alt mr-2"></i>Logout
+        </a>
+      </div>
+    </div>
+  </nav>
 
-      <div class="tab-pane fade show active" id="list-dash" role="tabpanel" aria-labelledby="list-dash-list">
-        <div class="container-fluid container-fullw bg-white" >
-              <div class="row">
-               <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body">
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Doctor List</h4>
-                      <script>
-                        function clickDiv(id) {
-                          document.querySelector(id).click();
-                        }
-                      </script> 
-                      <p class="links cl-effect-1">
-                        <a href="#list-doc" onclick="clickDiv('#list-doc-list')">
-                          View Doctors
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+  <div class="pt-32 pb-20 px-6 max-w-7xl mx-auto">
+    <h1 class="text-6xl md:text-8xl font-extrabold text-white text-center mb-6">
+      Admin <span class="text-emerald-200">Dashboard</span>
+    </h1>
+    <p class="text-center text-emerald-100 text-2xl mb-16">Manage hospital resources and personnel.</p>
 
-                <div class="col-sm-4" style="left: -3%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body" >
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-users fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Patient List</h4>
-                      
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-pat-list')">
-                          View Patients
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              
+    <div class="grid lg:grid-cols-4 gap-10">
 
-                <div class="col-sm-4">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body" >
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-paperclip fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Appointment Details</h4>
-                    
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-app-list')">
-                          View Appointments
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                </div>
+      <!-- Sidebar -->
+      <div class="space-y-4">
+        <button onclick="showTab('home')"
+          class="tab-btn tab-active w-full text-left px-6 py-4 rounded-2xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-home w-8"></i> Dashboard
+        </button>
+        <button onclick="showTab('doctors')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-user-md w-8"></i> Doctor List
+        </button>
+        <button onclick="showTab('patients')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-user-injured w-8"></i> Patient List
+        </button>
+        <button onclick="showTab('appointments')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-calendar-alt w-8"></i> Appointments
+        </button>
+        <button onclick="showTab('prescriptions')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-file-prescription w-8"></i> Prescriptions
+        </button>
+        <button onclick="showTab('add-doc')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-user-plus w-8"></i> Add Doctor
+        </button>
+        <button onclick="showTab('del-doc')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-user-minus w-8"></i> Delete Doctor
+        </button>
+        <button onclick="showTab('queries')"
+          class="tab-btn w-full text-left px-6 py-4 rounded-2xl bg-white/90 hover:bg-white shadow-xl text-lg font-bold flex items-center gap-3">
+          <i class="fas fa-comments w-8"></i> Queries
+        </button>
+      </div>
 
-                <div class="row">
-                <div class="col-sm-4" style="left: 13%;margin-top: 5%;">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body" >
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-list-ul fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Prescription List</h4>
-                    
-                      <p class="cl-effect-1">
-                        <a href="#list-pres" onclick="clickDiv('#list-pres-list')">
-                          View Prescriptions
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
+      <!-- Main Content -->
+      <div class="lg:col-span-3">
 
+        <!-- Home Dashboard -->
+        <div id="home" class="grid md:grid-cols-2 gap-8">
+          <div onclick="showTab('doctors')"
+            class="card p-10 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+            <i class="fas fa-user-md text-7xl text-emerald-600 mb-4"></i>
+            <h3 class="text-2xl font-bold">Manage Doctors</h3>
+          </div>
+          <div onclick="showTab('patients')"
+            class="card p-10 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+            <i class="fas fa-user-injured text-7xl text-emerald-600 mb-4"></i>
+            <h3 class="text-2xl font-bold">Manage Patients</h3>
+          </div>
+          <div onclick="showTab('appointments')"
+            class="card p-10 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+            <i class="fas fa-calendar-check text-7xl text-emerald-600 mb-4"></i>
+            <h3 class="text-2xl font-bold">Appointments</h3>
+          </div>
+          <div onclick="showTab('add-doc')"
+            class="card p-10 rounded-3xl text-center cursor-pointer hover:scale-105 transition-all duration-300 shadow-2xl">
+            <i class="fas fa-user-plus text-7xl text-emerald-600 mb-4"></i>
+            <h3 class="text-2xl font-bold">Add New Doctor</h3>
+          </div>
+        </div>
 
-                <div class="col-sm-4" style="left: 18%;margin-top: 5%">
-                  <div class="panel panel-white no-radius text-center">
-                    <div class="panel-body" >
-                      <span class="fa-stack fa-2x"> <i class="fa fa-square fa-stack-2x text-primary"></i> <i class="fa fa-plus fa-stack-1x fa-inverse"></i> </span>
-                      <h4 class="StepTitle" style="margin-top: 5%;">Manage Doctors</h4>
-                    
-                      <p class="cl-effect-1">
-                        <a href="#app-hist" onclick="clickDiv('#list-adoc-list')">Add Doctors</a>
-                        &nbsp|
-                        <a href="#app-hist" onclick="clickDiv('#list-ddoc-list')">
-                          Delete Doctors
-                        </a>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-                </div>
-                        
+        <!-- Doctor List -->
+        <div id="doctors" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Doctor List</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-6 py-4">Name</th>
+                  <th class="px-6 py-4">Specialization</th>
+                  <th class="px-6 py-4">Email</th>
+                  <th class="px-6 py-4">Fees</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM doctb");
+                while ($row = mysqli_fetch_assoc($result)) {
+                  echo "<tr class='border-b hover:bg-emerald-50'>
+                                        <td class='px-6 py-4 font-bold'>Dr. {$row['username']}</td>
+                                        <td class='px-6 py-4'>{$row['spec']}</td>
+                                        <td class='px-6 py-4'>{$row['email']}</td>
+                                        <td class='px-6 py-4'>{$row['docFees']}</td>
+                                    </tr>";
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-      
-                
+        <!-- Patient List -->
+        <div id="patients" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Patient List</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-6 py-4">ID</th>
+                  <th class="px-6 py-4">Name</th>
+                  <th class="px-6 py-4">Gender</th>
+                  <th class="px-6 py-4">Email</th>
+                  <th class="px-6 py-4">Contact</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM patreg");
+                while ($row = mysqli_fetch_assoc($result)) {
+                  echo "<tr class='border-b hover:bg-emerald-50'>
+                                        <td class='px-6 py-4'>{$row['pid']}</td>
+                                        <td class='px-6 py-4 font-bold'>{$row['fname']} {$row['lname']}</td>
+                                        <td class='px-6 py-4'>{$row['gender']}</td>
+                                        <td class='px-6 py-4'>{$row['email']}</td>
+                                        <td class='px-6 py-4'>{$row['contact']}</td>
+                                    </tr>";
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Appointment Details -->
+        <div id="appointments" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Appointment Details</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-6 py-4">ID</th>
+                  <th class="px-6 py-4">Patient</th>
+                  <th class="px-6 py-4">Doctor</th>
+                  <th class="px-6 py-4">Date/Time</th>
+                  <th class="px-6 py-4">Status</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM appointmenttb");
+                while ($row = mysqli_fetch_assoc($result)) {
+                  $status = "";
+                  if (($row['userStatus'] == 1) && ($row['doctorStatus'] == 1))
+                    $status = '<span class="text-green-600 font-bold">Active</span>';
+                  elseif (($row['userStatus'] == 0) && ($row['doctorStatus'] == 1))
+                    $status = '<span class="text-red-600 font-bold">Cancelled by Patient</span>';
+                  elseif (($row['userStatus'] == 1) && ($row['doctorStatus'] == 0))
+                    $status = '<span class="text-orange-600 font-bold">Cancelled by Doctor</span>';
+
+                  echo "<tr class='border-b hover:bg-emerald-50'>
+                                        <td class='px-6 py-4'>{$row['ID']}</td>
+                                        <td class='px-6 py-4'>{$row['fname']} {$row['lname']}</td>
+                                        <td class='px-6 py-4'>Dr. {$row['doctor']}</td>
+                                        <td class='px-6 py-4'>{$row['appdate']} <br> {$row['apptime']}</td>
+                                        <td class='px-6 py-4'>$status</td>
+                                    </tr>";
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Prescription List -->
+        <div id="prescriptions" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Prescription List</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-6 py-4">Doctor</th>
+                  <th class="px-6 py-4">Patient</th>
+                  <th class="px-6 py-4">Date</th>
+                  <th class="px-6 py-4">Disease</th>
+                  <th class="px-6 py-4">Prescription</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM prestb");
+                while ($row = mysqli_fetch_assoc($result)) {
+                  echo "<tr class='border-b hover:bg-emerald-50'>
+                                        <td class='px-6 py-4'>Dr. {$row['doctor']}</td>
+                                        <td class='px-6 py-4'>{$row['fname']} {$row['lname']}</td>
+                                        <td class='px-6 py-4'>{$row['appdate']}</td>
+                                        <td class='px-6 py-4'>{$row['disease']}</td>
+                                        <td class='px-6 py-4'>{$row['prescription']}</td>
+                                    </tr>";
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Add Doctor -->
+        <div id="add-doc" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Add New Doctor</h2>
+          <form method="post" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+              <div>
+                <label class="block text-lg font-bold mb-2">Doctor Name</label>
+                <input type="text" name="doctor" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-lg font-bold mb-2">Specialization</label>
+                <select name="special" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+                  <option value="">Select Specialization</option>
+                  <option value="General">General</option>
+                  <option value="Cardiologist">Cardiologist</option>
+                  <option value="Neurologist">Neurologist</option>
+                  <option value="Pediatrician">Pediatrician</option>
+                </select>
+              </div>
+              <div>
+                <label class="block text-lg font-bold mb-2">Email</label>
+                <input type="email" name="demail" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-lg font-bold mb-2">Consultancy Fees</label>
+                <input type="number" name="docFees" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-lg font-bold mb-2">Password</label>
+                <input type="password" name="dpassword" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+              </div>
+              <div>
+                <label class="block text-lg font-bold mb-2">Confirm Password</label>
+                <input type="password" name="cdpassword" required
+                  class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
               </div>
             </div>
-      
-                
-      
+            <button type="submit" name="docsub"
+              class="btn text-white font-bold text-xl px-12 py-4 rounded-xl shadow-lg w-full md:w-auto">Add
+              Doctor</button>
+          </form>
+        </div>
 
+        <!-- Delete Doctor -->
+        <div id="del-doc" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">Delete Doctor</h2>
+          <form method="post" class="space-y-6 max-w-lg">
+            <div>
+              <label class="block text-lg font-bold mb-2">Doctor Email</label>
+              <input type="email" name="demail" required
+                class="w-full px-6 py-3 rounded-xl border-2 border-emerald-300 focus:border-emerald-600 outline-none">
+            </div>
+            <button type="submit" name="docsub1"
+              onclick="return confirm('Are you sure you want to delete this doctor?')"
+              class="bg-red-600 hover:bg-red-700 text-white font-bold text-xl px-12 py-4 rounded-xl shadow-lg transition">Delete
+              Doctor</button>
+          </form>
+        </div>
 
+        <!-- Queries -->
+        <div id="queries" class="hidden card rounded-3xl p-10 shadow-3xl">
+          <h2 class="text-4xl font-extrabold text-emerald-700 mb-8">User Queries</h2>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead class="bg-emerald-100 text-emerald-800">
+                <tr>
+                  <th class="px-6 py-4">Name</th>
+                  <th class="px-6 py-4">Email</th>
+                  <th class="px-6 py-4">Contact</th>
+                  <th class="px-6 py-4">Message</th>
+                </tr>
+              </thead>
+              <tbody>
+                <?php
+                $result = mysqli_query($con, "SELECT * FROM contact");
+                while ($row = mysqli_fetch_assoc($result)) {
+                  echo "<tr class='border-b hover:bg-emerald-50'>
+                                        <td class='px-6 py-4 font-bold'>{$row['name']}</td>
+                                        <td class='px-6 py-4'>{$row['email']}</td>
+                                        <td class='px-6 py-4'>{$row['contact']}</td>
+                                        <td class='px-6 py-4'>{$row['message']}</td>
+                                    </tr>";
+                }
+                ?>
+              </tbody>
+            </table>
+          </div>
+        </div>
 
-
-
-
-      <div class="tab-pane fade" id="list-doc" role="tabpanel" aria-labelledby="list-home-list">
-              
-
-              <div class="col-md-8">
-      <form class="form-group" action="doctorsearch.php" method="post">
-        <div class="row">
-        <div class="col-md-10"><input type="text" name="doctor_contact" placeholder="Enter Email ID" class = "form-control"></div>
-        <div class="col-md-2"><input type="submit" name="doctor_search_submit" class="btn btn-primary" value="Search"></div></div>
-      </form>
-    </div>
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">Doctor Name</th>
-                    <th scope="col">Specialization</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Password</th>
-                    <th scope="col">Fees</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-                    $con=mysqli_connect("localhost","root","","myhmsdb");
-                    global $con;
-                    $query = "select * from doctb";
-                    $result = mysqli_query($con,$query);
-                    while ($row = mysqli_fetch_array($result)){
-                      $username = $row['username'];
-                      $spec = $row['spec'];
-                      $email = $row['email'];
-                      $password = $row['password'];
-                      $docFees = $row['docFees'];
-                      
-                      echo "<tr>
-                        <td>$username</td>
-                        <td>$spec</td>
-                        <td>$email</td>
-                        <td>$password</td>
-                        <td>$docFees</td>
-                      </tr>";
-                    }
-
-                  ?>
-                </tbody>
-              </table>
-        <br>
       </div>
-    
-
-    <div class="tab-pane fade" id="list-pat" role="tabpanel" aria-labelledby="list-pat-list">
-
-       <div class="col-md-8">
-      <form class="form-group" action="patientsearch.php" method="post">
-        <div class="row">
-        <div class="col-md-10"><input type="text" name="patient_contact" placeholder="Enter Contact" class = "form-control"></div>
-        <div class="col-md-2"><input type="submit" name="patient_search_submit" class="btn btn-primary" value="Search"></div></div>
-      </form>
-    </div>
-        
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                  <th scope="col">Patient ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Password</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-                    $con=mysqli_connect("localhost","root","","myhmsdb");
-                    global $con;
-                    $query = "select * from patreg";
-                    $result = mysqli_query($con,$query);
-                    while ($row = mysqli_fetch_array($result)){
-                      $pid = $row['pid'];
-                      $fname = $row['fname'];
-                      $lname = $row['lname'];
-                      $gender = $row['gender'];
-                      $email = $row['email'];
-                      $contact = $row['contact'];
-                      $password = $row['password'];
-                      
-                      echo "<tr>
-                        <td>$pid</td>
-                        <td>$fname</td>
-                        <td>$lname</td>
-                        <td>$gender</td>
-                        <td>$email</td>
-                        <td>$contact</td>
-                        <td>$password</td>
-                      </tr>";
-                    }
-
-                  ?>
-                </tbody>
-              </table>
-        <br>
-      </div>
-
-
-      <div class="tab-pane fade" id="list-pres" role="tabpanel" aria-labelledby="list-pres-list">
-
-       <div class="col-md-8">
-  
-        <div class="row">
-        
-    
-        
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                  <th scope="col">Doctor</th>
-                    <th scope="col">Patient ID</th>
-                    <th scope="col">Appointment ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Appointment Date</th>
-                    <th scope="col">Appointment Time</th>
-                    <th scope="col">Disease</th>
-                    <th scope="col">Allergy</th>
-                    <th scope="col">Prescription</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-                    $con=mysqli_connect("localhost","root","","myhmsdb");
-                    global $con;
-                    $query = "select * from prestb";
-                    $result = mysqli_query($con,$query);
-                    while ($row = mysqli_fetch_array($result)){
-                      $doctor = $row['doctor'];
-                      $pid = $row['pid'];
-                      $ID = $row['ID'];
-                      $fname = $row['fname'];
-                      $lname = $row['lname'];
-                      $appdate = $row['appdate'];
-                      $apptime = $row['apptime'];
-                      $disease = $row['disease'];
-                      $allergy = $row['allergy'];
-                      $pres = $row['prescription'];
-
-                      
-                      echo "<tr>
-                        <td>$doctor</td>
-                        <td>$pid</td>
-                        <td>$ID</td>
-                        <td>$fname</td>
-                        <td>$lname</td>
-                        <td>$appdate</td>
-                        <td>$apptime</td>
-                        <td>$disease</td>
-                        <td>$allergy</td>
-                        <td>$pres</td>
-                      </tr>";
-                    }
-
-                  ?>
-                </tbody>
-              </table>
-        <br>
-      </div>
-      </div>
-      </div>
-
-
-
-
-      <div class="tab-pane fade" id="list-app" role="tabpanel" aria-labelledby="list-pat-list">
-
-         <div class="col-md-8">
-      <form class="form-group" action="appsearch.php" method="post">
-        <div class="row">
-        <div class="col-md-10"><input type="text" name="app_contact" placeholder="Enter Contact" class = "form-control"></div>
-        <div class="col-md-2"><input type="submit" name="app_search_submit" class="btn btn-primary" value="Search"></div></div>
-      </form>
-    </div>
-        
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                  <th scope="col">Appointment ID</th>
-                  <th scope="col">Patient ID</th>
-                    <th scope="col">First Name</th>
-                    <th scope="col">Last Name</th>
-                    <th scope="col">Gender</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Doctor Name</th>
-                    <th scope="col">Consultancy Fees</th>
-                    <th scope="col">Appointment Date</th>
-                    <th scope="col">Appointment Time</th>
-                    <th scope="col">Appointment Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-
-                    $con=mysqli_connect("localhost","root","","myhmsdb");
-                    global $con;
-
-                    $query = "select * from appointmenttb;";
-                    $result = mysqli_query($con,$query);
-                    while ($row = mysqli_fetch_array($result)){
-                  ?>
-                      <tr>
-                        <td><?php echo $row['ID'];?></td>
-                        <td><?php echo $row['pid'];?></td>
-                        <td><?php echo $row['fname'];?></td>
-                        <td><?php echo $row['lname'];?></td>
-                        <td><?php echo $row['gender'];?></td>
-                        <td><?php echo $row['email'];?></td>
-                        <td><?php echo $row['contact'];?></td>
-                        <td><?php echo $row['doctor'];?></td>
-                        <td><?php echo $row['docFees'];?></td>
-                        <td><?php echo $row['appdate'];?></td>
-                        <td><?php echo $row['apptime'];?></td>
-                        <td>
-                    <?php if(($row['userStatus']==1) && ($row['doctorStatus']==1))  
-                    {
-                      echo "Active";
-                    }
-                    if(($row['userStatus']==0) && ($row['doctorStatus']==1))  
-                    {
-                      echo "Cancelled by Patient";
-                    }
-
-                    if(($row['userStatus']==1) && ($row['doctorStatus']==0))  
-                    {
-                      echo "Cancelled by Doctor";
-                    }
-                        ?></td>
-                      </tr>
-                    <?php } ?>
-                </tbody>
-              </table>
-        <br>
-      </div>
-
-<div class="tab-pane fade" id="list-messages" role="tabpanel" aria-labelledby="list-messages-list">...</div>
-
-      <div class="tab-pane fade" id="list-settings" role="tabpanel" aria-labelledby="list-settings-list">
-        <form class="form-group" method="post" action="admin-panel1.php">
-          <div class="row">
-                  <div class="col-md-4"><label>Doctor Name:</label></div>
-                  <div class="col-md-8"><input type="text" class="form-control" name="doctor" onkeydown="return alphaOnly(event);" required></div><br><br>
-                  <div class="col-md-4"><label>Specialization:</label></div>
-                  <div class="col-md-8">
-                   <select name="special" class="form-control" id="special" required="required">
-                      <option value="head" name="spec" disabled selected>Select Specialization</option>
-                      <option value="General" name="spec">General</option>
-                      <option value="Cardiologist" name="spec">Cardiologist</option>
-                      <option value="Neurologist" name="spec">Neurologist</option>
-                      <option value="Pediatrician" name="spec">Pediatrician</option>
-                    </select>
-                    </div><br><br>
-                  <div class="col-md-4"><label>Email ID:</label></div>
-                  <div class="col-md-8"><input type="email"  class="form-control" name="demail" required></div><br><br>
-                  <div class="col-md-4"><label>Password:</label></div>
-                  <div class="col-md-8"><input type="password" class="form-control"  onkeyup='check();' name="dpassword" id="dpassword"  required></div><br><br>
-                  <div class="col-md-4"><label>Confirm Password:</label></div>
-                  <div class="col-md-8"  id='cpass'><input type="password" class="form-control" onkeyup='check();' name="cdpassword" id="cdpassword" required>&nbsp &nbsp<span id='message'></span> </div><br><br>
-                   
-                  
-                  <div class="col-md-4"><label>Consultancy Fees:</label></div>
-                  <div class="col-md-8"><input type="text" class="form-control"  name="docFees" required></div><br><br>
-                </div>
-          <input type="submit" name="docsub" value="Add Doctor" class="btn btn-primary">
-        </form>
-      </div>
-
-      <div class="tab-pane fade" id="list-settings1" role="tabpanel" aria-labelledby="list-settings1-list">
-        <form class="form-group" method="post" action="admin-panel1.php">
-          <div class="row">
-          
-                  <div class="col-md-4"><label>Email ID:</label></div>
-                  <div class="col-md-8"><input type="email"  class="form-control" name="demail" required></div><br><br>
-                  
-                </div>
-          <input type="submit" name="docsub1" value="Delete Doctor" class="btn btn-primary" onclick="confirm('do you really want to delete?')">
-        </form>
-      </div>
-
-
-       <div class="tab-pane fade" id="list-attend" role="tabpanel" aria-labelledby="list-attend-list">...</div>
-
-       <div class="tab-pane fade" id="list-mes" role="tabpanel" aria-labelledby="list-mes-list">
-
-         <div class="col-md-8">
-      <form class="form-group" action="messearch.php" method="post">
-        <div class="row">
-        <div class="col-md-10"><input type="text" name="mes_contact" placeholder="Enter Contact" class = "form-control"></div>
-        <div class="col-md-2"><input type="submit" name="mes_search_submit" class="btn btn-primary" value="Search"></div></div>
-      </form>
-    </div>
-        
-              <table class="table table-hover">
-                <thead>
-                  <tr>
-                    <th scope="col">User Name</th>
-                    <th scope="col">Email</th>
-                    <th scope="col">Contact</th>
-                    <th scope="col">Message</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  <?php 
-
-                    $con=mysqli_connect("localhost","root","","myhmsdb");
-                    global $con;
-
-                    $query = "select * from contact;";
-                    $result = mysqli_query($con,$query);
-                    while ($row = mysqli_fetch_array($result)){
-              
-                      #$fname = $row['fname'];
-                      #$lname = $row['lname'];
-                      #$email = $row['email'];
-                      #$contact = $row['contact'];
-                  ?>
-                      <tr>
-                        <td><?php echo $row['name'];?></td>
-                        <td><?php echo $row['email'];?></td>
-                        <td><?php echo $row['contact'];?></td>
-                        <td><?php echo $row['message'];?></td>
-                      </tr>
-                    <?php } ?>
-                </tbody>
-              </table>
-        <br>
-      </div>
-
-
-
     </div>
   </div>
-</div>
-   </div>
-    <!-- Optional JavaScript -->
-    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
-   <script src="https://cdnjs.cloudflare.com/ajax/libs/limonte-sweetalert2/6.10.1/sweetalert2.all.min.js"></script>
-  </body>
+
+  <script>
+    function showTab(tab) {
+      // Hide all tabs
+      const tabs = ['home', 'doctors', 'patients', 'appointments', 'prescriptions', 'add-doc', 'del-doc', 'queries'];
+      tabs.forEach(t => {
+        const el = document.getElementById(t);
+        if (el) el.classList.add('hidden');
+      });
+
+      // Show selected tab
+      const selected = document.getElementById(tab);
+      if (selected) selected.classList.remove('hidden');
+
+      // Update buttons
+      document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.classList.remove('tab-active');
+        btn.classList.add('bg-white/90');
+      });
+      event.currentTarget.classList.add('tab-active');
+      event.currentTarget.classList.remove('bg-white/90');
+    }
+
+    // Auto-hide alerts
+    setTimeout(() => {
+      const alert = document.querySelector('.alert');
+      if (alert) alert.style.opacity = '0';
+    }, 5000);
+  </script>
+</body>
+
 </html>

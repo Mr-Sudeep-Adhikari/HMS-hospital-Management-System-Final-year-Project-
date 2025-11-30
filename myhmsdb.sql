@@ -7,7 +7,7 @@ USE myhmsdb;
 -- ============================
 CREATE TABLE `admintb` (
   `username` varchar(50) NOT NULL,
-  `password` varchar(30) NOT NULL
+  `password` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 INSERT INTO `admintb` (`username`, `password`) VALUES 
@@ -51,7 +51,7 @@ CREATE TABLE `contact` (
 -- ============================
 CREATE TABLE `doctb` (
   `username` varchar(50) NOT NULL,
-  `password` varchar(50) NOT NULL,
+  `password` varchar(255) NOT NULL,
   `email` varchar(50) NOT NULL,
   `spec` varchar(50) NOT NULL,
   `docFees` int(10) NOT NULL
@@ -68,8 +68,8 @@ CREATE TABLE `patreg` (
   `gender` varchar(10) NOT NULL,
   `email` varchar(30) NOT NULL,
   `contact` varchar(10) NOT NULL,
-  `password` varchar(30) NOT NULL,
-  `cpassword` varchar(30) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `cpassword` varchar(255) NOT NULL,
   PRIMARY KEY (`pid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 

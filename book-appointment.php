@@ -24,20 +24,20 @@ if (isset($_POST['app-submit'])) {
     $docFees = mysqli_real_escape_string($con, $_POST['docFees']);
     $appdate = mysqli_real_escape_string($con, $_POST['appdate']);
     $apptime = mysqli_real_escape_string($con, $_POST['apptime']);
-    
+
     $cur_date = date("Y-m-d");
-    date_default_timezone_set('Asia/Kolkata');
+    date_default_timezone_set('Asia/Kathmandu');
     $cur_time = date("H:i:s");
     $apptime1 = strtotime($apptime);
     $appdate1 = strtotime($appdate);
-    
+
     if (date("Y-m-d", $appdate1) >= $cur_date) {
         if ((date("Y-m-d", $appdate1) == $cur_date && date("H:i:s", $apptime1) > $cur_time) || date("Y-m-d", $appdate1) > $cur_date) {
             $check_query = mysqli_query($con, "select apptime from appointmenttb where doctor='$doctor' and appdate='$appdate' and apptime='$apptime'");
-            
+
             if (mysqli_num_rows($check_query) == 0) {
                 $query = mysqli_query($con, "insert into appointmenttb(pid,fname,lname,gender,email,contact,doctor,docFees,appdate,apptime,userStatus,doctorStatus) values($pid,'$fname','$lname','" . $_SESSION['gender'] . "','$email','$contact','$doctor','$docFees','$appdate','$apptime','1','1')");
-                
+
                 if ($query) {
                     echo "<script>alert('Your appointment successfully booked'); window.location.href='appointment-history.php';</script>";
                 } else {
@@ -56,6 +56,7 @@ if (isset($_POST['app-submit'])) {
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
@@ -64,15 +65,25 @@ if (isset($_POST['app-submit'])) {
     <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Sans&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="vendor/fontawesome/css/font-awesome.min.css">
     <style>
-        body { font-family: 'IBM Plex Sans', sans-serif; }
-        .btn-green { background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%); }
-        .nav-green { background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%); }
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+        }
+
+        .btn-green {
+            background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+        }
+
+        .nav-green {
+            background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+        }
     </style>
 </head>
+
 <body class="bg-gradient-to-br from-green-500 to-green-300">
     <nav class="nav-green fixed top-0 w-full z-50">
         <div class="max-w-7xl mx-auto px-4 py-3 flex justify-between items-center">
-            <a class="text-white font-bold text-lg" href="dashboard.php"><i class="fa fa-hospital-o"></i> KMC HOSPITAL</a>
+            <a class="text-white font-bold text-lg" href="dashboard.php"><i class="fa fa-hospital-o"></i> KMC
+                HOSPITAL</a>
             <div class="flex gap-6">
                 <a class="text-white hover:opacity-80" href="dashboard.php">Dashboard</a>
                 <a class="text-white hover:opacity-80" href="book-appointment.php">Book Appointment</a>
@@ -88,7 +99,9 @@ if (isset($_POST['app-submit'])) {
             <form method="POST" action="book-appointment.php">
                 <div class="mb-6">
                     <label class="block text-gray-700 font-semibold mb-2">Select Specialization</label>
-                    <select class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500" id="spec" name="spec" required>
+                    <select
+                        class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500"
+                        id="spec" name="spec" required>
                         <option value="">Choose Specialization</option>
                         <?php display_specs(); ?>
                     </select>
@@ -96,7 +109,9 @@ if (isset($_POST['app-submit'])) {
 
                 <div class="mb-6">
                     <label class="block text-gray-700 font-semibold mb-2">Select Doctor</label>
-                    <select class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500" id="doctor" name="doctor" required>
+                    <select
+                        class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500"
+                        id="doctor" name="doctor" required>
                         <option value="">Choose Doctor</option>
                         <?php display_docs(); ?>
                     </select>
@@ -104,17 +119,23 @@ if (isset($_POST['app-submit'])) {
 
                 <div class="mb-6">
                     <label class="block text-gray-700 font-semibold mb-2">Consultancy Fees</label>
-                    <input type="text" class="w-full px-4 py-2 border-2 border-green-200 rounded-lg bg-gray-100 cursor-not-allowed" id="docFees" name="docFees" readonly>
+                    <input type="text"
+                        class="w-full px-4 py-2 border-2 border-green-200 rounded-lg bg-gray-100 cursor-not-allowed"
+                        id="docFees" name="docFees" readonly>
                 </div>
 
                 <div class="mb-6">
                     <label class="block text-gray-700 font-semibold mb-2">Select Date</label>
-                    <input type="date" class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500" id="appdate" name="appdate" required>
+                    <input type="date"
+                        class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500"
+                        id="appdate" name="appdate" required>
                 </div>
 
                 <div class="mb-6">
                     <label class="block text-gray-700 font-semibold mb-2">Select Time</label>
-                    <select class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500" id="apptime" name="apptime" required>
+                    <select
+                        class="w-full px-4 py-2 border-2 border-green-200 rounded-lg focus:outline-none focus:border-green-500"
+                        id="apptime" name="apptime" required>
                         <option value="">Choose Time</option>
                         <option value="08:00:00">8:00 AM</option>
                         <option value="10:00:00">10:00 AM</option>
@@ -124,14 +145,17 @@ if (isset($_POST['app-submit'])) {
                     </select>
                 </div>
 
-                <button type="submit" name="app-submit" class="btn-green text-white w-full py-3 rounded-lg font-semibold hover:opacity-90 mb-4">Book Appointment</button>
-                <a href="dashboard.php" class="block text-center border-2 border-green-500 text-green-600 py-3 rounded-lg font-semibold hover:bg-green-50">Cancel</a>
+                <button type="submit" name="app-submit"
+                    class="btn-green text-white w-full py-3 rounded-lg font-semibold hover:opacity-90 mb-4">Book
+                    Appointment</button>
+                <a href="dashboard.php"
+                    class="block text-center border-2 border-green-500 text-green-600 py-3 rounded-lg font-semibold hover:bg-green-50">Cancel</a>
             </form>
         </div>
     </div>
 
     <script>
-        document.getElementById('spec').addEventListener('change', function() {
+        document.getElementById('spec').addEventListener('change', function () {
             let spec = this.value;
             let docs = [...document.getElementById('doctor').options];
             docs.forEach((el) => {
@@ -139,10 +163,11 @@ if (isset($_POST['app-submit'])) {
             });
         });
 
-        document.getElementById('doctor').addEventListener('change', function() {
+        document.getElementById('doctor').addEventListener('change', function () {
             let selection = document.querySelector(`[value="${this.value}"]`).getAttribute('data-value');
             document.getElementById('docFees').value = selection;
         });
     </script>
 </body>
+
 </html>
