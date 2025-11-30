@@ -1,0 +1,364 @@
+/* 
+   Enhanced Stylish Components
+   Light Green Theme - KMC Hospital
+*/
+
+/* ===== CARD COMPONENTS ===== */
+.panel {
+    border-radius: 12px;
+    border: none;
+    box-shadow: 0 2px 15px rgba(16, 185, 129, 0.1);
+    overflow: hidden;
+}
+
+.panel-white {
+    background: white;
+}
+
+.panel-body {
+    padding: 1.5rem;
+}
+
+.panel-heading {
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    color: white;
+    padding: 1rem 1.5rem;
+    border: none;
+}
+
+/* ===== TAB CONTENT STYLING ===== */
+.tab-pane {
+    animation: fadeIn 0.5s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* ===== APPOINTMENT FORM STYLING ===== */
+.appointment-form {
+    background: linear-gradient(135deg, rgba(16, 185, 129, 0.05) 0%, rgba(110, 231, 183, 0.05) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 5px solid #10b981;
+}
+
+.appointment-form h4 {
+    color: #10b981;
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+/* ===== STATUS BADGES ===== */
+.status-active {
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+.status-pending {
+    background: linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+.status-cancelled {
+    background: linear-gradient(135deg, #ef4444 0%, #f87171 100%);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    display: inline-block;
+    font-size: 0.85rem;
+}
+
+/* ===== ACTION BUTTONS GROUP ===== */
+.button-group {
+    display: flex;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.button-group .btn {
+    flex: 1;
+    min-width: 100px;
+    transition: all 0.3s ease;
+}
+
+/* ===== WELCOME SECTION ===== */
+.welcome-header {
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    margin-bottom: 2rem;
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.2);
+    text-align: center;
+}
+
+.welcome-header h2 {
+    margin: 0;
+    border: none;
+    padding: 0;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.welcome-header p {
+    margin: 0.5rem 0 0 0;
+    opacity: 0.95;
+    font-size: 1rem;
+}
+
+/* ===== DASHBOARD ICONS ===== */
+.fa-stack {
+    font-size: 2.5rem;
+}
+
+.fa-square {
+    color: #10b981;
+    opacity: 0.2;
+}
+
+.fa-stack-1x {
+    color: #10b981;
+}
+
+/* ===== STEPWISE STYLING ===== */
+.StepTitle {
+    color: #10b981;
+    font-weight: 700;
+    margin: 1rem 0 0.5rem 0;
+}
+
+.cl-effect-1 a {
+    color: #10b981;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.cl-effect-1 a::after {
+    content: '';
+    position: absolute;
+    width: 0;
+    height: 2px;
+    bottom: -5px;
+    left: 0;
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    transition: width 0.3s ease;
+}
+
+.cl-effect-1 a:hover::after {
+    width: 100%;
+}
+
+/* ===== HISTORY TABLE STYLING ===== */
+.history-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.history-table thead th {
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    color: white;
+    padding: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-size: 0.9rem;
+    border: none;
+}
+
+.history-table tbody tr {
+    border-bottom: 1px solid #e5e7eb;
+    transition: all 0.3s ease;
+}
+
+.history-table tbody tr:hover {
+    background-color: #d1fae5;
+    transform: scale(1.01);
+}
+
+.history-table tbody td {
+    padding: 1rem;
+    color: #374151;
+}
+
+.history-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+/* ===== DOCTOR/PATIENT INFO CARD ===== */
+.info-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);
+    border-left: 4px solid #10b981;
+    transition: all 0.3s ease;
+}
+
+.info-card:hover {
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+    transform: translateY(-2px);
+}
+
+.info-card label {
+    color: #10b981;
+    font-weight: 700;
+    margin-bottom: 0.25rem;
+    display: block;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-card .value {
+    color: #374151;
+    font-weight: 500;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+/* ===== PRESCRIPTION STYLING ===== */
+.prescription-box {
+    background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    border-left: 5px solid #10b981;
+}
+
+.prescription-box h4 {
+    color: #10b981;
+    margin-bottom: 1rem;
+}
+
+.prescription-box .prescription-item {
+    background: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    border-left: 3px solid #10b981;
+}
+
+/* ===== FORM INPUT FOCUS EFFECT ===== */
+.form-control:focus {
+    border-color: #10b981 !important;
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15) !important;
+}
+
+.form-control::placeholder {
+    color: #9ca3af;
+    font-style: italic;
+}
+
+/* ===== SELECT DROPDOWN ===== */
+select.form-control {
+    background-color: white;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2310b981' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2.25rem;
+    appearance: none;
+}
+
+/* ===== LOADING ANIMATION ===== */
+.loading {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 3px solid rgba(16, 185, 129, 0.3);
+    border-radius: 50%;
+    border-top-color: #10b981;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ===== EMPTY STATE ===== */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #9ca3af;
+}
+
+.empty-state .icon {
+    font-size: 3rem;
+    color: #10b981;
+    opacity: 0.3;
+    margin-bottom: 1rem;
+}
+
+.empty-state h4 {
+    color: #374151;
+    margin-bottom: 0.5rem;
+}
+
+/* ===== FLOATING ACTION BUTTON ===== */
+.fab {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #10b981 0%, #6ee7b7 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 5px 20px rgba(16, 185, 129, 0.3);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 999;
+}
+
+.fab:hover {
+    transform: scale(1.1);
+    box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+}
+
+/* ===== RESPONSIVE ADJUSTMENTS ===== */
+@media (max-width: 768px) {
+    .welcome-header {
+        padding: 1.5rem 1rem;
+    }
+    
+    .welcome-header h2 {
+        font-size: 1.5rem;
+    }
+    
+    .info-card {
+        padding: 1rem;
+    }
+    
+    .button-group {
+        flex-direction: column;
+    }
+    
+    .button-group .btn {
+        width: 100%;
+    }
+}

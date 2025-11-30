@@ -1,0 +1,438 @@
+/* 
+   KMC Hospital - Light Green Theme
+   Modern and Stylish UI Design
+*/
+
+:root {
+    --primary-green: #10b981;
+    --light-green: #d1fae5;
+    --dark-green: #047857;
+    --accent-green: #6ee7b7;
+    --text-dark: #1f2937;
+    --text-light: #6b7280;
+    --bg-light: #f9fafb;
+    --border-color: #e5e7eb;
+    --shadow: 0 10px 30px rgba(16, 185, 129, 0.1);
+    --shadow-hover: 0 20px 50px rgba(16, 185, 129, 0.15);
+}
+
+/* ===== GENERAL STYLES ===== */
+body {
+    background: linear-gradient(135deg, #f9fafb 0%, #f3fdf8 100%);
+    color: var(--text-dark);
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    transition: all 0.3s ease;
+}
+
+a {
+    color: var(--primary-green);
+    text-decoration: none;
+    transition: all 0.3s ease;
+}
+
+a:hover {
+    color: var(--dark-green);
+}
+
+/* ===== NAVBAR STYLES ===== */
+.navbar {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%) !important;
+    box-shadow: var(--shadow);
+    padding: 1rem 0 !important;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: white !important;
+    transition: transform 0.3s ease;
+}
+
+.navbar-brand:hover {
+    transform: scale(1.05);
+}
+
+.nav-link {
+    color: rgba(255, 255, 255, 0.9) !important;
+    font-weight: 500;
+    margin: 0 0.5rem;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: white !important;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    padding: 0.5rem 1rem;
+}
+
+/* ===== BUTTONS ===== */
+.btn-primary {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%) !important;
+    border: none !important;
+    color: white !important;
+    font-weight: 600;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-hover);
+    background: linear-gradient(135deg, var(--dark-green) 0%, var(--primary-green) 100%) !important;
+}
+
+.btn-primary:active {
+    transform: translateY(0);
+}
+
+.btn-outline-light {
+    color: white !important;
+    border: 2px solid white !important;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-light:hover {
+    background: white !important;
+    color: var(--primary-green) !important;
+}
+
+/* ===== CARDS & PANELS ===== */
+.card, .panel {
+    border: none !important;
+    border-radius: 12px !important;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08) !important;
+    transition: all 0.3s ease;
+}
+
+.card:hover, .panel:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-5px);
+}
+
+.card-header, .panel-heading {
+    background: linear-gradient(135deg, var(--light-green) 0%, var(--accent-green) 100%) !important;
+    color: var(--primary-green) !important;
+    border: none !important;
+    font-weight: 600;
+    border-radius: 12px 12px 0 0 !important;
+}
+
+.bg-white {
+    background-color: #ffffff !important;
+    border-radius: 12px;
+}
+
+/* ===== LIST GROUPS ===== */
+.list-group-item {
+    border: 1px solid var(--border-color) !important;
+    transition: all 0.3s ease;
+}
+
+.list-group-item:hover {
+    background-color: var(--light-green) !important;
+    border-color: var(--primary-green) !important;
+    transform: translateX(5px);
+}
+
+.list-group-item.active {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%) !important;
+    border-color: var(--primary-green) !important;
+    color: white !important;
+}
+
+/* ===== FORM CONTROLS ===== */
+.form-control, .form-control:focus {
+    border: 2px solid var(--border-color) !important;
+    border-radius: 8px !important;
+    transition: all 0.3s ease;
+    font-weight: 500;
+}
+
+.form-control:focus {
+    border-color: var(--primary-green) !important;
+    box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.15) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-light);
+    font-style: italic;
+}
+
+/* ===== TABLES ===== */
+.table {
+    border-collapse: collapse;
+}
+
+.table thead th {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    color: white;
+    font-weight: 600;
+    border: none;
+    padding: 1rem;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+.table tbody tr {
+    transition: all 0.3s ease;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.table tbody tr:hover {
+    background-color: var(--light-green);
+    transform: scale(1.01);
+}
+
+.table tbody td {
+    padding: 1rem;
+    color: var(--text-dark);
+}
+
+/* ===== BADGES & LABELS ===== */
+.badge {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.label {
+    color: var(--primary-green);
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.875rem;
+    letter-spacing: 0.5px;
+}
+
+/* ===== ALERTS ===== */
+.alert {
+    border: none;
+    border-radius: 12px;
+    border-left: 4px solid var(--primary-green);
+}
+
+.alert-success {
+    background-color: var(--light-green);
+    color: var(--dark-green);
+    border-left-color: var(--primary-green);
+}
+
+.alert-info {
+    background-color: rgba(16, 185, 129, 0.1);
+    color: var(--primary-green);
+    border-left-color: var(--primary-green);
+}
+
+.alert-warning {
+    background-color: rgba(249, 115, 22, 0.1);
+    color: #92400e;
+    border-left-color: #f97316;
+}
+
+.alert-danger {
+    background-color: rgba(239, 68, 68, 0.1);
+    color: #7f1d1d;
+    border-left-color: #ef4444;
+}
+
+/* ===== HEADINGS & TEXT ===== */
+h1, h2, h3, h4, h5, h6 {
+    color: var(--text-dark);
+    font-weight: 700;
+    font-family: 'Segoe UI', sans-serif;
+}
+
+h1 {
+    font-size: 2.5rem;
+    margin-bottom: 1.5rem;
+}
+
+h2 {
+    font-size: 2rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 3px solid var(--primary-green);
+    padding-bottom: 0.5rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+    color: var(--primary-green);
+}
+
+/* ===== MODALS ===== */
+.modal-content {
+    border: none;
+    border-radius: 15px;
+    box-shadow: var(--shadow-hover);
+}
+
+.modal-header {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%);
+    color: white;
+    border-radius: 15px 15px 0 0;
+    border: none;
+}
+
+.modal-header .btn-close {
+    filter: brightness(0) invert(1);
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    background-color: transparent;
+    padding: 0;
+}
+
+.breadcrumb-item.active {
+    color: var(--primary-green);
+    font-weight: 600;
+}
+
+.breadcrumb-item a {
+    color: var(--primary-green);
+}
+
+/* ===== SCROLLBAR ===== */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--bg-light);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--primary-green);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--dark-green);
+}
+
+/* ===== SPECIAL ELEMENTS ===== */
+.shadow-lg {
+    box-shadow: var(--shadow) !important;
+}
+
+.text-primary {
+    color: var(--primary-green) !important;
+}
+
+.bg-primary {
+    background: linear-gradient(135deg, var(--primary-green) 0%, var(--accent-green) 100%) !important;
+}
+
+.border-primary {
+    border-color: var(--primary-green) !important;
+}
+
+/* ===== WELCOME MESSAGE ===== */
+.welcome-section {
+    background: linear-gradient(135deg, var(--light-green) 0%, rgba(16, 185, 129, 0.05) 100%);
+    padding: 2rem;
+    border-radius: 12px;
+    border-left: 5px solid var(--primary-green);
+    margin-bottom: 2rem;
+}
+
+.welcome-section h3 {
+    color: var(--primary-green);
+    margin-bottom: 0.5rem;
+}
+
+/* ===== DASHBOARD CARDS ===== */
+.dashboard-card {
+    background: white;
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 10px rgba(16, 185, 129, 0.08);
+    transition: all 0.3s ease;
+    border-top: 4px solid var(--primary-green);
+}
+
+.dashboard-card:hover {
+    box-shadow: var(--shadow);
+    transform: translateY(-5px);
+}
+
+.dashboard-card .icon {
+    font-size: 2.5rem;
+    color: var(--primary-green);
+    margin-bottom: 1rem;
+}
+
+/* ===== ANIMATIONS ===== */
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.animate-slide {
+    animation: slideIn 0.5s ease-out;
+}
+
+.animate-fade {
+    animation: fadeIn 0.5s ease-out;
+}
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+    
+    h2 {
+        font-size: 1.5rem;
+    }
+    
+    .btn-primary {
+        padding: 0.5rem 1rem !important;
+        font-size: 0.9rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+}
+
+/* ===== UTILITY CLASSES ===== */
+.rounded-lg {
+    border-radius: 12px !important;
+}
+
+.rounded-xl {
+    border-radius: 15px !important;
+}
+
+.transition-all {
+    transition: all 0.3s ease;
+}
+
+.hover-lift:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow);
+}

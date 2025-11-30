@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Our Services | MediPulse - KMC Hospital</title>
+    <link rel="shortcut icon" href="images/favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+    <style>
+        .gradient-bg { 
+            background: linear-gradient(135deg, #064e3b 0%, #059669 40%, #10b981 100%);
+            background-size: 200% 200%;
+            animation: gradient 18s ease infinite;
+        }
+        @keyframes gradient { 0%,100%{background-position:0% 50%} 50%{background-position:100% 50%} }
+        .card { 
+            background: rgba(255,255,255,0.98); 
+            backdrop-filter: blur(20px); 
+            border: 1px solid rgba(255,255,255,0.4); 
+            transition: all 0.5s;
+        }
+        .card:hover { 
+            transform: translateY(-20px) scale(1.03); 
+            box-shadow: 0 40px 80px rgba(5,150,105,0.4); 
+        }
+        .btn { 
+            background: linear-gradient(to right, #059669, #10b981); 
+        }
+        .btn:hover { 
+            transform: translateY(-10px); 
+            box-shadow: 0 30px 60px rgba(5,150,105,0.6); 
+        }
+        .float { animation: float 7s ease-in-out infinite; }
+        @keyframes float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-30px)} }
+        .pulse { animation: pulse 2s infinite; }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.7} }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen text-white">
+
+    <!-- Floating Background -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-20">
+        <i class="fas fa-heartbeat text-9xl absolute top-20 left-10 float"></i>
+        <i class="fas fa-stethoscope text-8xl absolute bottom-32 right-20 float" style="animation-delay:2s;"></i>
+        <i class="fas fa-prescription-bottle-alt text-7xl absolute top-1/3 left-1/4 float" style="animation-delay:4s;"></i>
+    </div>
+
+    <!-- Navbar -->
+    <nav class="bg-emerald-800/95 backdrop-blur-xl fixed w-full top-0 z-50 shadow-2xl">
+        <div class="max-w-7xl mx-auto px-6 py-5 flex justify-between items-center">
+            <div class="flex items-center gap-4">
+                <i class="fas fa-hospital-symbol text-5xl pulse"></i>
+                <h1 class="text-4xl font-extrabold">MediPulse</h1>
+            </div>
+            <div class="flex gap-8 text-lg font-medium">
+                <a href="index.php" class="hover:text-emerald-200 transition">Home</a>
+                <a href="services.html" class="text-emerald-200 font-bold">Services</a>
+                <a href="#departments" class="hover:text-emerald-200 transition">Departments</a>
+                <a href="login.php" class="bg-white text-emerald-700 px-8 py-3 rounded-full font-bold hover:bg-emerald-100 transition">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="pt-32 pb-20 px-6 text-center">
+        <div class="max-w-6xl mx-auto">
+            <h1 class="text-6xl md:text-8xl font-extrabold mb-8">
+                Our <span class="text-emerald-200">Medical Services</span>
+            </h1>
+            <p class="text-2xl md:text-3xl text-emerald-100 max-w-4xl mx-auto leading-relaxed">
+                Comprehensive healthcare with cutting-edge technology and compassionate care
+            </p>
+        </div>
+    </section>
+
+    <!-- Main Services -->
+    <section class="py-20 px-6 bg-white/10 backdrop-blur-lg">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-5xl md:text-6xl font-extrabold text-center mb-20">Core Services</h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-calendar-check text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">Online Appointment Booking</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Book appointments 24/7 with specialist doctors. Real-time slot availability and instant confirmation.
+                    </p>
+                </div>
+
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-file-medical text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">Digital Prescriptions & Bills</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Access your medical records, prescriptions, and bills anytime. Download PDF instantly.
+                    </p>
+                </div>
+
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-video text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">Telemedicine & Video Consult</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Consult with doctors from home via secure video calls. Coming soon!
+                    </p>
+                </div>
+
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-ambulance text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">24/7 Emergency Care</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        Immediate medical attention with fully equipped ambulance and trauma center.
+                    </p>
+                </div>
+
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-vials text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">Advanced Laboratory</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        State-of-the-art diagnostic lab with accurate reports delivered online.
+                    </p>
+                </div>
+
+                <div class="card p-12 rounded-3xl shadow-2xl text-center">
+                    <div class="bg-emerald-100 w-28 h-28 rounded-full flex items-center justify-center mx-auto mb-8">
+                        <i class="fas fa-x-ray text-6xl text-emerald-700"></i>
+                    </div>
+                    <h3 class="text-3xl font-bold mb-6">Digital X-Ray & Imaging</h3>
+                    <p class="text-lg text-gray-700 leading-relaxed">
+                        High-resolution digital imaging with reports available in patient portal.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Departments -->
+    <section id="departments" class="py-20 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <h2 class="text-5xl md:text-7xl font-extrabold mb-16">Specialized Departments</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-10">
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-heart text-6xl mb-6 text-red-400"></i>
+                    <p class="text-2xl font-bold">Cardiology</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-brain text-6xl mb-6 text-purple-400"></i>
+                    <p class="text-2xl font-bold">Neurology</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-baby text-6xl mb-6 text-pink-400"></i>
+                    <p class="text-2xl font-bold">Pediatrics</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-tooth text-6xl mb-6 text-blue-400"></i>
+                    <p class="text-2xl font-bold">Dental Care</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-eye text-6xl mb-6 text-indigo-400"></i>
+                    <p class="text-2xl font-bold">Ophthalmology</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-bone text-6xl mb-6 text-gray-300"></i>
+                    <p class="text-2xl font-bold">Orthopedics</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-female text-6xl mb-6 text-rose-400"></i>
+                    <p class="text-2xl font-bold">Gynecology</p>
+                </div>
+                <div class="bg-white/20 backdrop-blur-lg p-10 rounded-3xl border-2 border-white/30 hover:scale-110 transition">
+                    <i class="fas fa-lungs text-6xl mb-6 text-teal-400"></i>
+                    <p class="text-2xl font-bold">Pulmonology</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 px-6 bg-white/10 backdrop-blur-lg">
+        <div class="max-w-4xl mx-auto text-center">
+            <h2 class="text-5xl md:text-7xl font-extrabold mb-10">Ready to Get Started?</h2>
+            <p class="text-2xl text-emerald-100 mb-12">
+                Join thousands of patients who trust MediPulse for their healthcare needs
+            </p>
+            <a href="patientlogin.php" class="btn text-white font-extrabold text-3xl px-32 py-8 rounded-3xl shadow-2xl transition transform hover:scale-110 inline-block">
+                Access Patient Portal
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-emerald-900/90 py-16 text-center">
+        <div class="max-w-7xl mx-auto px-6">
+            <h1 class="text-5xl font-extrabold mb-4">MediPulse</h1>
+            <p class="text-2xl opacity-90">XYZ Hospital | Kathmandu, Nepal</p>
+            <p class="mt-8 text-emerald-200 text-lg">
+                © 2025 MediPulse • UI: Emerald Pulse • Made with <i class="fas fa-heart text-red-500"></i> for Healthcare
+            </p>
+        </div>
+    </footer>
+</body>
+</html>
